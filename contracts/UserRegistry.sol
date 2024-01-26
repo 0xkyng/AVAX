@@ -1,28 +1,37 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.8.0;
+
+contract UserRegistry {
+ // Mapping to store registered users
+ mapping(address => bool)  registeredUsers;
 
 
-contract Errors {
-    uint public value;
+ // Function to register a user
+ function registerUser(address user) public {
+    // Ensure the user is not already registered
+    require(!registeredUsers[user], "User is already registered");
 
-    // Require statement
-    function setValue(uint _value) public {
-        require(_value > 0, "Value must be greater than 0");
-        value = _value;
+    // Register the user
+    registeredUsers[user] = true;
+
+    // Check if the registration was successful
+    assert(registeredUsers[user]);
+
+ }
+
+ // Function to deregister a user
+ function deregisterUser(address user) public {
+    // Ensure the user is currently registered
+    if (!registeredUsers[user]) {
+        revert("User is not registered");
     }
 
-    // Assert statement
-    function incrementValue(uint _increment) public {
-        assert(value + _increment >= value);
-        value += _increment;
-    }
+    // Deregister the user
+    registeredUsers[user] = false;
+ }
 
-    // Revert statement
-    function resetValue() public {
-        if (value == 0) {
-            revert("Value must not be 0 to reset");
-        }
-        value = 0;
-    }
+ // Function to check if a user is registered
+ function isRegistered(address user) public view returns (bool) {
+    return registeredUsers[user];
+ }
 }
-
